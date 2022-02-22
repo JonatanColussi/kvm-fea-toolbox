@@ -1,6 +1,6 @@
 const { build } = require('gluegun')
 
-async function run(argv) {
+async function run (argv) {
   const cli = build()
     .brand('kvm-fea')
     .src(__dirname)

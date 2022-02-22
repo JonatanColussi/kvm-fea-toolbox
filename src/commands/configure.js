@@ -2,13 +2,17 @@ const btoa = require('btoa')
 
 const command = {
   name: 'configure',
-  run: async toolbox => {
+  run: async (toolbox) => {
     const { print, prompt, filesystem } = toolbox
-    
-    const configFilename = `${filesystem.homedir()}${filesystem.separator}.kvm-fea-toolbok-config`
+
+    const configFilename = `${filesystem.homedir()}${
+      filesystem.separator
+    }.kvm-fea-toolbok-config`
 
     if (filesystem.exists(configFilename)) {
-      print.info('kvm-fea-toolbok is already configured on this computer with the following parameters:')
+      print.info(
+        'kvm-fea-toolbok is already configured on this computer with the following parameters:'
+      )
 
       const { overwriteConfig } = await prompt.ask([
         {
@@ -16,11 +20,11 @@ const command = {
           name: 'overwriteConfig',
           message: 'Do you want to overwrite the settings?',
           default: false
-        },
+        }
       ])
 
       if (!overwriteConfig) {
-        return;
+        return
       }
     }
 
@@ -41,14 +45,13 @@ const command = {
       configFilename,
       btoa(
         JSON.stringify({
-          username, password
+          username,
+          password
         })
       )
     )
 
     print.success('Config finished')
-
-    return
   }
 }
 

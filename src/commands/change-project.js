@@ -3,8 +3,8 @@ const atob = require('atob')
 
 module.exports = {
   name: 'change-project',
-  run: async toolbox => {
-    console.log = function() {}
+  run: async (toolbox) => {
+    console.log = function () {}
     const { print, filesystem, prompt } = toolbox
 
     const configFilename = `${filesystem.homedir()}${
@@ -39,7 +39,7 @@ module.exports = {
     const setTextInputValue = async (page, selector, value) => {
       await page.waitForTimeout(100)
       await page.evaluate(
-        data => {
+        (data) => {
           return (document.querySelector(data.selector).value = data.value)
         },
         { selector, value }
@@ -64,23 +64,28 @@ module.exports = {
     const concat = []
 
     const pages = await page.evaluate(() => {
-      return [...document.querySelectorAll('.pagination li')].length - 2
+      const qtd = [...document.querySelectorAll('.pagination li')].length - 2
+
+      return qtd > 0 ? qtd : 1
     })
 
     for (let i = 0; i < pages; i++) {
       await page.waitForTimeout(100)
-      let urls = await page.evaluate(() => {
+
+      const urls = await page.evaluate(() => {
         return [...document.querySelectorAll('a[title="Update')].map(
-          link => link.href
+          (link) => link.href
         )
       })
 
       concat.push(...urls)
 
-      await page.click('.pagination .next')
+      if (pages > 1) {
+        await page.click('.pagination .next')
+      }
     }
 
-    for (link of concat) {
+    for (const link of concat) {
       await page.goto(link)
       await setTextInputValue(
         page,
